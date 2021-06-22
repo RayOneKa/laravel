@@ -15,6 +15,7 @@
             <p class="card-text">
                 <small class="text-muted">
                     {{product.price}} руб.
+                    <button @click='addToOrder' class="btn btn-info">Добавить в корзину</button>
                 </small>
             </p>
         </div>
@@ -25,8 +26,31 @@
 
 <script>
 
+const Swal = require('sweetalert2')
+
 export default {
-    props: ['product']
+    props: ['product'],
+    methods: {
+        addToOrder () {
+            const params = {
+                productId: this.product.id
+            }
+            axios.post('/order/addProduct', params)
+            .then(data => {
+
+            })
+            .catch(error => {
+                if (error.response.status == 401) {
+                    Swal.fire({
+                        title: 'Товар не добавлен',
+                        text: 'Авторизуйтесь',
+                        icon: 'error',
+                        confirmButtonText: 'OK('
+                        })
+                }
+            })
+        }
+    }
 }
 </script>
 

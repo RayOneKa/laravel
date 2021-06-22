@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,13 +20,20 @@ use Illuminate\Support\Facades\Route;
 Route::get('/categories/get', [CategoryController::class, 'get']);
 Route::get('/', [CategoryController::class, 'welcome'])->name('welcome');
 Route::get('/categories/{categoryId}', [CategoryController::class, 'show']);
-Route::get('/categoriesList', [CategoryController::class, 'list'])->name('categories');
-Route::post('/categories/create', [CategoryController::class, 'create']);
 
 
-Route::get('/products', [ProductController::class, 'list'])->name('products');
-Route::post('/products/create', [ProductController::class, 'create']);
 Route::get('/products/get', [ProductController::class, 'get']);
+
+Route::prefix('admin')->middleware('admin')->group(function() {
+    Route::get('/categoriesList', [CategoryController::class, 'list'])->name('categories');
+    Route::post('/categories/create', [CategoryController::class, 'create']);
+    Route::post('/products/create', [ProductController::class, 'create']);
+    Route::get('/products', [ProductController::class, 'list'])->name('products');
+});
+
+Route::prefix('order')->middleware('auth')->group(function() {
+    Route::post('addProduct', [OrderController::class, 'addProduct']);
+});
 
 
 Auth::routes();

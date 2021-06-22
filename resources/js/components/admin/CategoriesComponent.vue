@@ -53,7 +53,7 @@
                     name: this.categoryName,
                     desc: this.categoryDesc
                 }
-                axios.post('/categories/create', params)
+                axios.post('admin/categories/create', params)
                 .then(() => {
                     document.location.reload();
                 })

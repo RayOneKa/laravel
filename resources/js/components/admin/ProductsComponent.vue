@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-5">
-        <h1>Список категории</h1>
+        <h1>Список продуктов</h1>
 
         <div class="form-group">
             <input v-model='productName' class="form-control" placeholder="Имя нового продукта">
@@ -87,7 +87,7 @@
                 fData.append('description', this.description)
                 fData.append('price', this.price)
                 fData.append('categoryId', this.categoryId)
-                axios.post('/products/create', fData)
+                axios.post('/admin/products/create', fData)
                 .then(() => {
                     //document.location.reload();
                 })

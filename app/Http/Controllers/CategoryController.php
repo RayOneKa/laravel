@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\OrdersProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
@@ -23,8 +26,19 @@ class CategoryController extends Controller
             ->where('category_id', '=', $categoryId)
             ->get();
 
+        $user = Auth::user();
+        $order = Order::where('user_id', $user->id)
+        ->where('status', 0)
+        ->first();
+
+        $ordersProduct = [];
+        if ($order) {
+            $ordersProduct = OrdersProduct::where('order_id', $order->id)->get();
+        }
+
         return view('categoryProducts', [
-            'products' => $products
+                'products' => $products,
+                'ordersProducts' => $ordersProduct
             ]);
     }
 
