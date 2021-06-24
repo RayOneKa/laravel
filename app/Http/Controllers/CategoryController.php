@@ -27,12 +27,14 @@ class CategoryController extends Controller
             ->get();
 
         $user = Auth::user();
-        $order = Order::where('user_id', $user->id)
-        ->where('status', 0)
-        ->first();
+        if ($user) {
+            $order = Order::where('user_id', $user->id)
+            ->where('status', 0)
+            ->first();
+        }
 
-        $ordersProduct = [];
-        if ($order) {
+        $ordersProduct = collect();
+        if (isset($order)) {
             $ordersProduct = OrdersProduct::where('order_id', $order->id)->get();
         }
 

@@ -15,7 +15,24 @@
             <p class="card-text">
                 <small class="text-muted">
                     {{product.price}} руб.
-                    <button @click='addToOrder' class="btn btn-info">Добавить в корзину</button>
+                    <div v-if='quantity'>
+                        <button
+                            @click="addToOrder(-1)"
+                            :disabled='processing'
+                            class="btn btn-danger">
+                            -
+                        </button>
+                        {{quantity}}
+                        <button
+                            :disabled='processing'
+                            @click="addToOrder(1)"
+                            class="btn btn-success">
+                            +
+                        </button>
+                    </div>
+                    <button v-else :disabled='processing' @click="addToOrder(1)" class="btn btn-info">
+                        Добавить в корзину
+                    </button>
                 </small>
             </p>
         </div>
@@ -29,15 +46,23 @@
 const Swal = require('sweetalert2')
 
 export default {
-    props: ['product'],
+    props: ['product', 'ordersProducts'],
+    data () {
+        return {
+            quantity: 0,
+            processing: false
+        }
+    },
     methods: {
-        addToOrder () {
+        addToOrder (quantityChange) {
+            this.processing = true
             const params = {
-                productId: this.product.id
+                productId: this.product.id,
+                quantityChange
             }
             axios.post('/order/addProduct', params)
-            .then(data => {
-
+            .then(({data}) => {
+                this.quantity = data.quantity
             })
             .catch(error => {
                 if (error.response.status == 401) {
@@ -49,6 +74,17 @@ export default {
                         })
                 }
             })
+            .finally(() => {
+                this.processing = false
+            })
+        }
+    },
+    mounted () {
+        const product = this.ordersProducts.find((orderProduct => {
+            return orderProduct.product_id == this.product.id
+        }))
+        if (product) {
+            this.quantity = product.quantity
         }
     }
 }

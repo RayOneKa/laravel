@@ -1,11 +1,16 @@
 <template>
     <div>
-        <product-component
-            v-for='product in products'
-            :product="product"
-            :key='product.id'
-        >
-        </product-component>
+        <div v-if='products.length'>
+            <product-component
+                v-for='product in products'
+                :product="product"
+                :orders-products="ordersProducts"
+                :key='product.id'
+            />
+        </div>
+        <span v-else>
+            <em>В данной категории отсутствуют товары</em>
+        </span>
     </div>
 </template>
 
@@ -13,10 +18,7 @@
     import ProductComponent from './ProductComponent.vue';
 
 export default {
-    props: ['products'],
-    components: {ProductComponent},
-    mounted () {
-
-    }
+    props: ['products', 'ordersProducts'],
+    components: {ProductComponent}
 }
 </script>

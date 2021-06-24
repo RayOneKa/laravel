@@ -32,6 +32,7 @@ Route::prefix('admin')->middleware('admin')->group(function() {
 });
 
 Route::prefix('order')->middleware('auth')->group(function() {
+    Route::get('cart', [OrderController::class, 'cart'])->name('cart');
     Route::post('addProduct', [OrderController::class, 'addProduct']);
 });
 

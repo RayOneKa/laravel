@@ -7,9 +7,30 @@ use App\Models\OrdersProduct;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+
+    public function cart ()
+    {
+        $user = Auth::user();
+        $order = Order::where('user_id', $user->id)->where('status', 0)->first();
+        $ordersProduct = collect();
+        if (isset($order)) {
+            $ordersProduct = DB::table('orders_products as op')
+                ->select(
+                    'p.*',
+                    'op.quantity'
+                )
+                ->join('products as p', 'p.id', 'op.product_id')
+                ->where('op.order_id', $order->id)
+                ->get();
+        }
+        
+        return view('cart', ['ordersProduct' => $ordersProduct]);
+    }
+
     public function addProduct (Request $request)
     {
         $user = Auth::user();
@@ -27,8 +48,12 @@ class OrderController extends Controller
             ->first();
 
         if ($ordersProduct) {
-            $ordersProduct->quantity += 1;
-            $ordersProduct->save();
+            $ordersProduct->quantity += $request['quantityChange'];
+            if ($ordersProduct->quantity == 0) {
+                $ordersProduct->delete();
+            } else {
+                $ordersProduct->save();
+            }
         } else {
             $ordersProduct = OrdersProduct::create([
                 'order_id' => $order->id,
