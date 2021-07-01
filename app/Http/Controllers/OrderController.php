@@ -14,6 +14,24 @@ use Illuminate\Support\Facades\Mail;
 class OrderController extends Controller
 {
 
+    public function products ($orderId)
+    {
+        // TODO:: ПОЛУЧИТЬ МОДЕЛЬ ИЗ ПАРАМЕТРА
+        $order = Order::find($orderId);
+        return DB::table('orders_products as op')
+        ->select(
+            'op.id',
+            'op.quantity',
+            'op.product_id',
+            'p.title',
+            'p.price',
+            'p.picture'
+        )
+        ->join('products as p', 'p.id', 'op.product_id')
+        ->where('op.order_id', $order->id)
+        ->get();
+    }
+
     public function finish ()
     {
         $user = Auth::user();
