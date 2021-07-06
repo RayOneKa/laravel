@@ -55,12 +55,13 @@ export default {
     },
     methods: {
         addToOrder (quantityChange) {
+            this.$emit('add-to-order', {quantityChange})
             this.processing = true
             const params = {
                 productId: this.product.id,
                 quantityChange
             }
-            axios.post('/order/addProduct', params)
+            axios.post('/api/order/addProduct', params)
             .then(({data}) => {
                 this.quantity = data.quantity
             })

@@ -28,8 +28,7 @@ Vue.component('cart', require('./components/Cart.vue').default);
 Vue.component('navbar', require('./components/NavbarComponent.vue').default);
 Vue.component('profile', require('./components/ProfileComponent.vue').default);
 
-
-
+import router from './components/router'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -39,4 +38,5 @@ Vue.component('profile', require('./components/ProfileComponent.vue').default);
 
 const app = new Vue({
     el: '#app',
+    router
 });

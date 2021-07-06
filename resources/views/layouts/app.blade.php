@@ -18,6 +18,13 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+        .router-link-active:hover {
+            text-decoration: none;
+            color: rgba(0, 0, 0, 0.75)
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -36,8 +43,9 @@
         ></navbar>
 
         <main class="py-4 container">
-            @yield('content')
+            <router-view></router-view>
         </main>
+    
     </div>
 </body>
 </html>
