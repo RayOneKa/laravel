@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +19,17 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::prefix('auth')->group(function() {
+    Route::get('/login', [LoginController::class, 'login']);
+    Route::post('/logout', function() {
+        Auth::logout();
+    });
+
+    Route::middleware('auth:sanctum')->get('/getUser', function (Request $request) {
+        return $request->user();
+    });
+});
 
 Route::prefix('categories')->group(function() {
     Route::get('/get', [CategoryController::class, 'get']);

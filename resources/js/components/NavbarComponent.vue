@@ -13,7 +13,7 @@
                 <ul class="navbar-nav ml-auto">
                     <template v-if="user">
                         <li class="nav-item">
-                            <a class="nav-link" :href="routeCart">Корзина</a>
+                            <router-link to='/cart'>Корзина</router-link>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -22,7 +22,7 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a :href="routeProfile" class="dropdown-item">Личный кабинет</a>
+                                <router-link to='/profile'>Личный кабинет</router-link>
                                 <button @click='logout' class="btn btn-link">Выход</button>
                             </div>
                         </li>
@@ -30,10 +30,10 @@
                     <template v-else>
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <a class="nav-link" :href="routeLogin">Авторизация</a>
+                            <router-link to='/login'>Авторизация</router-link>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" :href="routeRegister">Регистрация</a>
+                            <router-link to='/register'>Регистрация</router-link>
                         </li>                          
                     </template>                  
                 </ul>
@@ -45,14 +45,22 @@
 <script>
 
 export default {
-    props: ['appName', 'routeLogin', 'routeRegister', 'routeCart', 'routeLogout', 'routeProfile', 'user'],
+    props: ['appName'],
+    computed: {
+        user () {
+            return this.$store.state.user
+        }
+    },
     methods: {
         logout() {
-            axios.post(this.routeLogout)
+            axios.post('/api/auth/logout')
             .then(() => {
-                window.location.href = '/'
+                this.$store.dispatch('logout')
             })
         }
+    },
+    created () {
+        this.$store.dispatch('getUser')
     }
 }
 </script>
@@ -66,4 +74,8 @@ export default {
     .btn-link:hover {
         color: rgba(0, 0, 0, 0.7);
     }    
+
+    .nav-item {
+        margin-right: 10px;
+    }
 </style>
