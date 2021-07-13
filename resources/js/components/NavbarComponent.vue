@@ -13,7 +13,7 @@
                 <ul class="navbar-nav ml-auto">
                     <template v-if="user">
                         <li class="nav-item">
-                            <router-link to='/cart'>Корзина</router-link>
+                            <router-link to='/cart'>Корзина ({{cartProductsQuantity}})</router-link>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -49,6 +49,9 @@ export default {
     computed: {
         user () {
             return this.$store.state.user
+        },
+        cartProductsQuantity () {
+            return this.$store.getters.cartProductsQuantity
         }
     },
     methods: {
@@ -61,6 +64,7 @@ export default {
     },
     created () {
         this.$store.dispatch('getUser')
+        this.$store.dispatch('getCartProducts')
     }
 }
 </script>

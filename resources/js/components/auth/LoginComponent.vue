@@ -58,13 +58,16 @@ export default {
     data () {
         return {
             email: '',
-            password: '',
-            errors: []
+            password: ''
+        }
+    },
+    computed: {
+        errors () {
+            return this.$store.state.loginErrors
         }
     },
     methods: {
         login () {
-            this.errors = []
             const params = {
                 email: this.email,
                 password: this.password

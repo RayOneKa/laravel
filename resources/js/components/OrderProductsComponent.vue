@@ -38,7 +38,7 @@ export default {
         }
     },
     mounted () {
-        axios.get(`/order/${this.orderId}/products`)
+        axios.get(`/api/order/${this.orderId}/products`)
         .then(({data}) => {
             this.products = data
         })

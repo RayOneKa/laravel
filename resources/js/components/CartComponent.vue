@@ -40,15 +40,17 @@
 </template>
 
 <script>
-
 const Swal = require('sweetalert2')
 
 export default {
-    props: ['orderProducts'],
     data () {
         return {
-            products: this.orderProducts,
             processing: false
+        }
+    },
+    computed: {
+        products () {
+            return this.$store.state.cartProducts
         }
     },
     methods: {
@@ -72,38 +74,11 @@ export default {
             })
         },
         changeProductQuantity (productId, quantityChange) {
-            this.processing = true
             const params = {
                 productId,
                 quantityChange
             }
-            axios.post('/order/addProduct', params)
-            .then(({data}) => {
-                if (data.quantity == 0) {
-                    this.products = this.products.filter(product => {
-                        return product.id != data.id
-                    })
-                } else {
-                    const product = this.products.find(product => {
-                        return product.id == data.id
-                    })
-                    const idx = this.products.indexOf(product)
-                    this.products[idx].quantity = data.quantity
-                }
-            })
-            .catch(error => {
-                if (error.response.status == 401) {
-                    Swal.fire({
-                        title: 'Произошла ошибка',
-                        text: 'Авторизуйтесь',
-                        icon: 'error',
-                        confirmButtonText: 'OK('
-                        })
-                }
-            })
-            .finally(() => {
-                this.processing = false
-            })
+            this.$store.dispatch('changeCartProductQuantity', params)
         }
     }
 }
