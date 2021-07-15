@@ -9,15 +9,15 @@
                         </td>
                         <td>
                             <button
-                                @click="changeProductQuantity(product.product_id, -1)"
+                                @click="changeProductQuantity(product.id, -1)"
                                 :disabled='processing'
                                 class="btn btn-danger">
                                 -
                             </button>
-                            {{product.quantity}}
+                            {{product.pivot.quantity}}
                             <button
                                 :disabled='processing'
-                                @click="changeProductQuantity(product.product_id, 1)"
+                                @click="changeProductQuantity(product.id, 1)"
                                 class="btn btn-success">
                                 +
                             </button>
@@ -26,7 +26,7 @@
                             {{product.price}} руб.
                         </td>
                         <td>
-                            {{product.quantity * product.price}} руб.
+                            {{product.pivot.quantity * product.price}} руб.
                         </td>
                     </tr>
                 </tbody>
@@ -55,7 +55,7 @@ export default {
     },
     methods: {
         finishOrder () {
-            axios.get('/order/finish')
+            axios.get('/api/order/finish')
             .then(() => {
             Swal.fire({
                 title: 'Готово!',

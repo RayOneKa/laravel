@@ -57,6 +57,7 @@ Route::prefix('order')->middleware('auth')->group(function() {
     Route::get('finish', [OrderController::class, 'finish']);
     Route::get('get', [OrderController::class, 'orders']);
     Route::post('addProduct', [OrderController::class, 'addProduct']);
+    Route::post('removeProduct', [OrderController::class, 'removeProduct']);
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

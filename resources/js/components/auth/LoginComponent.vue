@@ -74,7 +74,7 @@ export default {
             }
             this.$store.dispatch('login', params)
                 .then(() => {
-                    //this.$router.push('/')
+                    this.$router.push('/')
                 })
         }
     }
