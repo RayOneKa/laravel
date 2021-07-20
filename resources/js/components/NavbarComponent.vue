@@ -23,7 +23,12 @@
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <router-link to='/profile'>Личный кабинет</router-link>
+                                <template v-if='user.admin'>
+                                    <router-link to='/admin/categories'>Категории</router-link>
+                                    <router-link to='/admin/products'>Продукты</router-link>
+                                </template>
                                 <button @click='logout' class="btn btn-link">Выход</button>
+
                             </div>
                         </li>
                     </template>
@@ -59,6 +64,7 @@ export default {
             axios.post('/api/auth/logout')
             .then(() => {
                 this.$store.dispatch('logout')
+                this.$router.push('/')
             })
         }
     },

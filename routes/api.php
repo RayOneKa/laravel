@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function() {
     Route::get('/login', [LoginController::class, 'login']);
+    Route::post('/register', [RegisterController::class, 'register']);
     Route::post('/logout', function() {
         Auth::logout();
     });

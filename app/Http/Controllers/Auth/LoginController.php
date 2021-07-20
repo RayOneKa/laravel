@@ -55,6 +55,13 @@ class LoginController extends Controller
             ];
         }
 
-        abort(500, 'Не удалось авторизоваться');
+        $error = [
+            'errors' => [
+                'user' => [
+                    'Неверный пароль'
+                ]
+            ]
+        ];
+        return response($error, 422); 
     }
 }

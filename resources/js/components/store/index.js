@@ -32,8 +32,11 @@ const store = new Vuex.Store({
           commit('setCartProducts', data)
         })
     },
+    setUser({commit}, user) {
+      commit('setUser', user)
+    },
     getUser ({commit}) {
-      axios.get('/api/auth/getUser')
+      return axios.get('/api/auth/getUser')
       .then(response => {
         commit('setUser', response.data)
       })
