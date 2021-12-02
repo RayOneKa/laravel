@@ -1,24 +1,19 @@
 <template>
     <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                
-            </a>
+            <router-link to="/">{{appName}}</router-link>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav mr-auto">
-                    {{appName}}
-                </ul>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ml-auto">
                     <template v-if="user">
                         <li class="nav-item">
-                            <a class="nav-link" :href="routeCart">Корзина</a>
+                            <router-link to='/cart'>Корзина ({{cartProductsQuantity}})</router-link>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -27,18 +22,23 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a :href="routeProfile" class="dropdown-item">Личный кабинет</a>
+                                <router-link to='/profile'>Личный кабинет</router-link>
+                                <template v-if='user.admin'>
+                                    <router-link to='/admin/categories'>Категории</router-link>
+                                    <router-link to='/admin/products'>Продукты</router-link>
+                                </template>
                                 <button @click='logout' class="btn btn-link">Выход</button>
+
                             </div>
                         </li>
                     </template>
                     <template v-else>
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <a class="nav-link" :href="routeLogin">Авторизация</a>
+                            <router-link to='/login'>Авторизация</router-link>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" :href="routeRegister">Регистрация</a>
+                            <router-link to='/register'>Регистрация</router-link>
                         </li>                          
                     </template>                  
                 </ul>
@@ -50,14 +50,27 @@
 <script>
 
 export default {
-    props: ['appName', 'routeLogin', 'routeRegister', 'routeCart', 'routeLogout', 'routeProfile', 'user'],
+    props: ['appName'],
+    computed: {
+        user () {
+            return this.$store.state.user
+        },
+        cartProductsQuantity () {
+            return this.$store.getters.cartProductsQuantity
+        }
+    },
     methods: {
         logout() {
-            axios.post(this.routeLogout)
+            axios.post('/api/auth/logout')
             .then(() => {
-                window.location.href = '/'
+                this.$store.dispatch('logout')
+                this.$router.push('/')
             })
         }
+    },
+    created () {
+        this.$store.dispatch('getUser')
+        this.$store.dispatch('getCartProducts')
     }
 }
 </script>
@@ -71,4 +84,8 @@ export default {
     .btn-link:hover {
         color: rgba(0, 0, 0, 0.7);
     }    
+
+    .nav-item {
+        margin-right: 10px;
+    }
 </style>

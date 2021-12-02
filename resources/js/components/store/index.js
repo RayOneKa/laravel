@@ -1,0 +1,88 @@
+import axios from 'axios'
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
+  state: {
+    user: null,
+    loginErrors: [],
+    cartProducts: []
+  },
+  getters: {
+    cartProductsQuantity (state) {
+      return state.cartProducts.reduce((sum, cartProduct) => {
+        return sum += cartProduct.pivot.quantity
+      }, 0)
+    }
+  },
+  actions: {
+    changeCartProductQuantity ({commit}, params) {
+      const method = params.quantityChange > 0 ? 'addProduct' : 'removeProduct'
+      axios.post(`/api/order/${method}`, params)
+      .then(({data}) => {
+        console.log(data)
+        commit('setCartProducts', data)
+      })
+    },
+    getCartProducts ({commit}) {
+      axios.get('/api/order/cart')
+        .then(({data}) => {
+          commit('setCartProducts', data)
+        })
+    },
+    setUser({commit}, user) {
+      commit('setUser', user)
+    },
+    getUser ({commit}) {
+      return axios.get('/api/auth/getUser')
+      .then(response => {
+        commit('setUser', response.data)
+      })
+    },
+    login ({commit, dispatch}, params) {
+      commit('clearLoginErrors')
+      return new Promise((res => {
+        axios.get('/api/auth/login', {params})
+        .then(response => {
+          if (response.data.user) {
+            commit('setUser', response.data.user)
+          } else {
+            dispatch('getUser')
+          }
+          res()
+        })
+        .catch(error => {
+            commit('setLoginErrors', error.response.data.errors) 
+        })
+      }))
+
+    },
+    logout ({commit}) {
+      commit('clearUser')
+    }
+  },
+  mutations: {
+    setCartProducts (state, products) {
+      state.cartProducts = products
+    },
+    setUser (state, user) {
+      state.user = user
+    },
+    clearUser (state) {
+      state.user = null
+    },    
+    setLoginErrors (state, errors) {
+      state.loginErrors = errors
+    },
+    clearLoginErrors (state) {
+      state.loginErrors = []
+    },
+    increment (state) {
+      state.count++
+    }
+  }
+})
+
+export default store

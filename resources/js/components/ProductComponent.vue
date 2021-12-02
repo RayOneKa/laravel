@@ -2,7 +2,7 @@
     <div class="card mb-3" style="max-width: 540px;">
     <div class="row no-gutters">
         <div class="col-md-4">
-        <img width="180" :src="`/storage/img/${product.picture}`">
+        <img width="180" :src="picture">
         </div>
         <div class="col-md-8">
         <div class="card-body">
@@ -15,14 +15,14 @@
             <p class="card-text">
                 <small class="text-muted">
                     {{product.price}} руб.
-                    <div v-if='quantity'>
+                    <div v-if='productQuantity'>
                         <button
                             @click="addToOrder(-1)"
                             :disabled='processing'
                             class="btn btn-danger">
                             -
                         </button>
-                        {{quantity}}
+                        {{productQuantity}}
                         <button
                             :disabled='processing'
                             @click="addToOrder(1)"
@@ -46,37 +46,33 @@
 const Swal = require('sweetalert2')
 
 export default {
-    props: ['product', 'ordersProducts'],
+    props: ['product'],
     data () {
         return {
-            quantity: 0,
             processing: false
+        }
+    },
+    computed: {
+        picture () {
+            return this.product.picture ? `/storage/img/${this.product.picture}` : '/storage/img/noImage.png'
+        },
+        productQuantity () {
+            const product = this.ordersProducts.find(cartProduct => {
+                return cartProduct.id == this.product.id
+            })
+            return product ? product.pivot.quantity : null
+        },
+        ordersProducts () {
+            return this.$store.state.cartProducts
         }
     },
     methods: {
         addToOrder (quantityChange) {
-            this.processing = true
             const params = {
                 productId: this.product.id,
                 quantityChange
             }
-            axios.post('/order/addProduct', params)
-            .then(({data}) => {
-                this.quantity = data.quantity
-            })
-            .catch(error => {
-                if (error.response.status == 401) {
-                    Swal.fire({
-                        title: 'Товар не добавлен',
-                        text: 'Авторизуйтесь',
-                        icon: 'error',
-                        confirmButtonText: 'OK('
-                        })
-                }
-            })
-            .finally(() => {
-                this.processing = false
-            })
+            this.$store.dispatch('changeCartProductQuantity', params)
         }
     },
     mounted () {

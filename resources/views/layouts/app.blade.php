@@ -18,26 +18,24 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+        .router-link-active:hover {
+            text-decoration: none;
+            color: rgba(0, 0, 0, 0.75)
+        }
+    </style>
 </head>
 <body>
     <div id="app">
         <navbar
-            app-name="{{ config('app.name', 'Laravel') }}"
-            route-cart="{{ route('cart') }}"
-            route-login="{{ route('login') }}"
-            route-register="{{ route('register') }}"
-            route-logout="{{ route('logout') }}"        
-            @if(Auth::user())
-                route-profile="{{ route('profile') }}"
-                :user={{Auth::user()}}
-            @else
-                user=''
-            @endif
+            app-name="{{ config('app.name', 'Laravel') }}"      
         ></navbar>
 
         <main class="py-4 container">
-            @yield('content')
+            <router-view></router-view>
         </main>
+    
     </div>
 </body>
 </html>

@@ -12,9 +12,9 @@
             <tbody>
                 <tr v-for='product in products' :key='product.id'>
                     <td>{{product.title}}</td>
-                    <td>{{product.quantity}}</td>
-                    <td>{{product.price}}</td>
-                    <td>{{product.price * product.quantity}}</td>
+                    <td>{{product.pivot.quantity}}</td>
+                    <td>{{product.pivot.price}}</td>
+                    <td>{{product.pivot.price * product.pivot.quantity}}</td>
                 </tr>
             </tbody>
         </table>
@@ -33,12 +33,12 @@ export default {
     computed: {
         orderSum () {
             return this.products.reduce((sum, product) => {
-                return sum += product.price * product.quantity
+                return sum += product.pivot.price * product.pivot.quantity
             }, 0)
         }
     },
     mounted () {
-        axios.get(`/order/${this.orderId}/products`)
+        axios.get(`/api/order/${this.orderId}/products`)
         .then(({data}) => {
             this.products = data
         })
